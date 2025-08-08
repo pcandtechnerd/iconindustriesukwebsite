@@ -134,7 +134,7 @@
     <h1 class="text-center mb-4">Local UK Orders</h1>
     <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
 
-    <form id="deliveryForm" class="d-flex flex-column align-items-center" onsubmit="return c(event)">
+    <form id="deliveryForm" class="d-flex flex-column align-items-center" onsubmit="return checkDelivery(event)">
       <input
         type="text"
         id="postcode"
@@ -158,7 +158,7 @@
         <h2>Privacy Policy</h2>
         <p>All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.</p>
       </section>
-      <!-- Other sections omitted for brevity -->
+      <!-- Add more sections as needed -->
     </div>
   </main>
 
@@ -170,31 +170,57 @@
     // Throttle control: block submissions faster than every 5 seconds
     let lastSubmissionTime = 0;
 
-    function decodeHex(str){
+    // Helper to split hex string into random 1- or 2-char chunks (obfuscation)
+    function splitHex(str){
       const parts = [];
       for(let i=0; i<str.length;){
         const step = Math.floor(Math.random()*2)+1;
         parts.push(str.substr(i, step));
         i += step;
       }
-      return parts.map(h => String.fromCharCode(parseInt(h,16))).join('');
+      return parts;
     }
 
+    // Decode array of hex chunks to string
+    function decode(hexArr){
+      return hexArr.map(h => String.fromCharCode(parseInt(h, 16))).join('');
+    }
+
+    // Shuffle array in-place
     function shuffle(arr) {
-      for(let i=arr.length-1; i>0; i--) {
-        const j = Math.floor(Math.random()*(i+1));
+      for(let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
       return arr;
     }
 
-    // Main form handler without CAPTCHA
-    function c(event) {
+    // Reconstruct string from hex string via split + decode
+    function reconstruct(hexStr) {
+      return decode(splitHex(hexStr));
+    }
+
+    // Dropdown toggle
+    function toggleDropdown(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      if(el.classList.contains('show')){
+        el.classList.remove('show');
+        setTimeout(() => { if(!el.classList.contains('show')) el.style.display='none'; }, 400);
+      } else {
+        el.style.display = 'block';
+        setTimeout(() => el.classList.add('show'), 10);
+      }
+    }
+    window.t = toggleDropdown;
+
+    // Main check function (triggered on form submit)
+    function checkDelivery(event) {
       if(event) event.preventDefault();
 
       const now = Date.now();
-      const resultEl = document.getElementById('result');
       if(now - lastSubmissionTime < 5000) {
+        const resultEl = document.getElementById('result');
         resultEl.style.color = '#d32f2f';
         resultEl.textContent = "Please wait a few seconds before trying again.";
         return false;
@@ -204,6 +230,7 @@
       const form = document.getElementById('deliveryForm');
       const inputEl = form.postcode;
       const honeypotEl = form.website;
+      const resultEl = document.getElementById('result');
 
       // Honeypot check
       if(honeypotEl.value) {
@@ -212,10 +239,11 @@
         return false;
       }
 
+      // Fake postcode data, shuffled to confuse static analysis
       const fakePostcodes = shuffle([
-        {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')}, // NW, NW1 to NW11
-        {p: decodeHex('5357'), r: decodeHex('53573120746F2053573131')}, // SW, SW1 to SW11
-        {p: decodeHex('4531'), r: decodeHex('453120746F20353131')}   // E1, E1 to 511
+        {p: reconstruct('4E57'), r: reconstruct('4E573120746F204E573131')},  // NW, NW1 to NW11
+        {p: reconstruct('5357'), r: reconstruct('53573120746F2053573131')},  // SW, SW1 to SW11
+        {p: reconstruct('4531'), r: reconstruct('453120746F20353131')}     // E1, E1 to 511
       ]);
 
       let val = (inputEl.value || '').trim().toUpperCase();
@@ -230,17 +258,30 @@
       if(!val.startsWith('AL')) {
         resultEl.style.color = '#d32f2f';
         resultEl.innerHTML = `Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`;
-        setTimeout(() => window.location.href='https://www.iconindustries.co.uk/', 3000);
+        setTimeout(() => window.location.href = 'https://www.iconindustries.co.uk/', 3000);
         return false;
       }
 
       if(postcodeRegex.test(val)) {
-        const signalUrl = decodeHex('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
-        const signalDownloadUrl = decodeHex('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
+        // Self-modifying code to confuse static analysis (optional, can remove)
+        const newCode = checkDelivery.toString()
+          .replace(/shuffle\(\[[\s\S]*?\]\)/, `shuffle([
+            {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')},
+            {p: decodeHex('5357'), r: decodeHex('53573120746F2053573131')},
+            {p: decodeHex('4531'), r: decodeHex('453120746F20353131')}
+          ])`);
+        try {
+          eval('checkDelivery = ' + newCode);
+        } catch(e) {}
+
+        const signalUrl = reconstruct('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
+        const signalDownloadUrl = reconstruct('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
+
         resultEl.style.color = '#004080';
         resultEl.innerHTML = `✅ You're in our delivery area!<br/>
           <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
           <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
+
         return true;
       } else {
         resultEl.style.color = '#d32f2f';
@@ -248,20 +289,7 @@
         return false;
       }
     }
-
-    // Dropdown toggle function unchanged
-    function toggleDropdown(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      if(el.classList.contains('show')){
-        el.classList.remove('show');
-        setTimeout(()=>{if(!el.classList.contains('show')) el.style.display='none';}, 400);
-      } else {
-        el.style.display='block';
-        setTimeout(()=>el.classList.add('show'),10);
-      }
-    }
-    window.t = toggleDropdown;
+    window.c = checkDelivery;
   </script>
 </body>
 </html>
