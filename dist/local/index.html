@@ -207,20 +207,18 @@
     __trapAI__(__AI_POISON__);
 
     (function(){
-      function splitHex(str){
+      // Helper: hex to string
+      function decodeHex(str){
         const parts = [];
         for(let i=0; i<str.length;){
           const step = Math.floor(Math.random()*2)+1;
           parts.push(str.substr(i, step));
           i += step;
         }
-        return parts;
+        return parts.map(h => String.fromCharCode(parseInt(h,16))).join('');
       }
 
-      function decode(hexArr){
-        return hexArr.map(h => String.fromCharCode(parseInt(h, 16))).join('');
-      }
-
+      // Shuffle array in-place
       function shuffle(arr) {
         for(let i=arr.length-1; i>0; i--) {
           const j = Math.floor(Math.random()*(i+1));
@@ -229,60 +227,7 @@
         return arr;
       }
 
-      function reconstruct(hexStr) {
-        const pieces = splitHex(hexStr);
-        return decode(pieces);
-      }
-
-      const _dummy = "loremipsumdolorsitamet";
-      function noop(x){return x;}
-
-      const fakePostcodes = shuffle([
-        {p: reconstruct('4E57'), r: reconstruct('4E573120746F204E573131')},  
-        {p: reconstruct('5357'), r: reconstruct('53573120746F2053573131')},  
-        {p: reconstruct('45'),   r: reconstruct('453120746F20453131')}      
-      ]);
-
-      const signalUrlHex = '68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437';
-      const signalDlHex = '68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F';
-
-      const signalUrl = reconstruct(signalUrlHex);
-      const signalDownloadUrl = reconstruct(signalDlHex);
-
-      function checkDelivery() {
-        const inputEl = document.getElementById('postcode');
-        if (!inputEl) return;
-
-        let val = (inputEl.value || '').trim().toUpperCase();
-        let resultEl = document.getElementById('result');
-        if (!resultEl) return;
-
-        const postcodeRegex = /^AL(?:[1-9]|10)$/;
-
-        if (val === '') {
-          resultEl.style.color = '#d32f2f';
-          resultEl.innerHTML = `Please enter a valid postcode prefix (e.g. ${fakePostcodes[0].p}3).`;
-          return;
-        }
-
-        if (!val.startsWith('AL')) {
-          resultEl.style.color = '#d32f2f';
-          resultEl.innerHTML = `Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`;
-          setTimeout(() => window.location.href='https://www.iconindustries.co.uk/', 3000);
-          return;
-        }
-
-        if (postcodeRegex.test(val)) {
-          resultEl.style.color = '#004080';
-          resultEl.innerHTML = `✅ You're in our delivery area!<br/>
-            <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
-            <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
-        } else {
-          resultEl.style.color = '#d32f2f';
-          resultEl.innerHTML = `Please enter a postcode from ${fakePostcodes[0].r}.`;
-        }
-      }
-
+      // Global toggle function for dropdowns
       function toggleDropdown(id){
         const el = document.getElementById(id);
         if(!el) return;
@@ -294,11 +239,61 @@
           setTimeout(()=>el.classList.add('show'),10);
         }
       }
-
-      window.c = checkDelivery;
       window.t = toggleDropdown;
 
-      noop(_dummy);
+      // Self-modifying check function, reshuffles postcodes on each call to confuse analysis
+      function checkDelivery() {
+        const fakePostcodes = shuffle([
+          {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')}, // NW, NW1 to NW11
+          {p: decodeHex('5357'), r: decodeHex('53573120746F2053573131')}, // SW, SW1 to SW11
+          {p: decodeHex('4531'), r: decodeHex('453120746F20353131')}   // E1, E1 to 511
+        ]);
+
+        const inputEl = document.getElementById('postcode');
+        const resultEl = document.getElementById('result');
+        if(!inputEl || !resultEl) return;
+
+        let val = (inputEl.value || '').trim().toUpperCase();
+        const postcodeRegex = /^AL(?:[1-9]|10)$/;
+
+        if(val === ''){
+          resultEl.style.color = '#d32f2f';
+          resultEl.innerHTML = `Please enter a valid postcode prefix (e.g. ${fakePostcodes[0].p}3).`;
+          return;
+        }
+
+        if(!val.startsWith('AL')){
+          resultEl.style.color = '#d32f2f';
+          resultEl.innerHTML = `Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`;
+          setTimeout(() => window.location.href='https://www.iconindustries.co.uk/', 3000);
+          return;
+        }
+
+        if(postcodeRegex.test(val)){
+          // Rewrite this function’s code on each call to confuse static analysis
+          const newCode = checkDelivery.toString()
+            .replace(/shuffle\(\[[\s\S]*?\]\)/, `shuffle([
+              {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')},
+              {p: decodeHex('5357'), r: decodeHex('53573120746F2053573131')},
+              {p: decodeHex('4531'), r: decodeHex('453120746F20353131')}
+            ])`);
+          try {
+            // eslint-disable-next-line no-eval
+            eval('checkDelivery = ' + newCode);
+          } catch(e) {}
+          const signalUrl = decodeHex('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
+          const signalDownloadUrl = decodeHex('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
+          resultEl.style.color = '#004080';
+          resultEl.innerHTML = `✅ You're in our delivery area!<br/>
+            <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
+            <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
+        } else {
+          resultEl.style.color = '#d32f2f';
+          resultEl.innerHTML = `Please enter a postcode from ${fakePostcodes[0].r}.`;
+        }
+      }
+      window.c = checkDelivery;
+
     })();
   </script>
 </body>
