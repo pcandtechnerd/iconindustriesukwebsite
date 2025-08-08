@@ -1,48 +1,239 @@
-<script>
-  function d(h) {
-    return h.match(/.{1,2}/g).map(x => String.fromCharCode(parseInt(x, 16))).join('');
-  }
-  const f = [{ p: d('4E57'), r: d('4E573120746F204E573131') }, { p: d('5357'), r: d('53573120746F2053573131') }, { p: d('45'), r: d('453120746F20453131') }][Math.floor(Math.random() * 3)];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Local UK Orders | ICON Industries UK</title>
 
-  // Obfuscated Signal URLs
-  const signalUrl = d('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
-  const signalDownloadUrl = d('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
+  <!-- Bootstrap & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  function c() {
-    const i = document.getElementById('postcode').value.trim().toUpperCase(),
-      r = document.getElementById('result'),
-      p = /^AL(?:[1-9]|10)$/;
-    if (i === '') {
-      r.innerHTML = `Please enter a valid postcode prefix (e.g. ${f.p}3).`;
-      r.style.color = '#d32f2f';
-      return;
-    }
-    if (!i.startsWith('AL')) {
-      r.innerHTML = `Sorry, delivery is only available locally in ${f.p} London. Redirecting...`;
-      r.style.color = '#d32f2f';
-      setTimeout(() => window.location.href = 'https://www.iconindustries.co.uk/', 3000);
-      return;
-    }
-    if (p.test(i)) {
-      r.innerHTML = `✅ You're in our delivery area!<br/>
-      <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
-      <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
-      r.style.color = '#004080';
-    } else {
-      r.innerHTML = `Please enter a postcode from ${f.r}.`;
-      r.style.color = '#d32f2f';
-    }
-  }
+  <!-- Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 
-  function t(i) {
-    const e = document.getElementById(i);
-    if (e.classList.contains('show')) {
-      e.classList.remove('show');
-      setTimeout(() => { if (!e.classList.contains('show')) e.style.display = 'none' }, 400)
-    } else {
-      e.style.display = 'block';
-      setTimeout(() => e.classList.add('show'), 10)
+  <!-- Theme & Meta -->
+  <meta name="theme-color" content="#e0f2ff" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #e6f4ff;
     }
-  }
-  document.getElementById('postcode').addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); c() } });
-</script>
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #b3d9ff;
+      padding: 1rem 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      color: #0077cc;
+    }
+    h1 {
+      font-weight: 600;
+      color: #004080;
+    }
+    h2 {
+      color: #005c99;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    p, li {
+      color: #333;
+    }
+    .description {
+      font-size: 1rem;
+      color: #444;
+    }
+    input, button {
+      margin-top: 1rem;
+    }
+    #result {
+      margin-top: 1rem;
+    }
+    .dropdown-content {
+      display: none;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      background-color: #f2fbff;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #cce7ff;
+    }
+    .dropdown-content.show {
+      display: block;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    footer {
+      background-color: #004080;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .btn-primary {
+      background-color: #4db8ff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.6rem 2rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+      transition: transform 0.1s ease-in-out, background-color 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: #3399ff;
+    }
+    .btn-primary:active {
+      transform: scale(0.95);
+    }
+    .form-control {
+      max-width: 300px;
+    }
+    section h2[onclick] {
+      cursor: pointer;
+      user-select: none;
+    }
+    section h2[onclick]:hover {
+      color: #0077cc;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header onclick="window.location.href='https://www.iconindustries.co.uk/'">
+    ICON INDUSTRIES UK
+  </header>
+
+  <main class="container py-5">
+    <h1 class="text-center mb-4">Local UK Orders</h1>
+    <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
+
+    <div class="d-flex flex-column align-items-center">
+      <input type="text" id="postcode" class="form-control text-center" placeholder="e.g. NW3..." maxlength="5" />
+      <button class="btn btn-primary mt-2" onclick="c()">Check Delivery Area</button>
+      <div id="result" class="text-center mt-3"></div>
+    </div>
+
+    <div class="mt-5">
+      <section>
+        <h2>Privacy Policy</h2>
+        <p>All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.</p>
+      </section>
+
+      <section>
+        <h2>Payment & Charges</h2>
+        <p>Payment is required in cash upon delivery unless otherwise agreed in writing.</p>
+        <p>Excessive delays, no-shows, or misuse of time may incur a Time Waster Fee of up to £15, payable before any future service.</p>
+      </section>
+
+      <section>
+        <h2>Return Policy</h2>
+        <p>Returns must be requested within 14 calendar days. Items must be unused and in original condition. Return shipping is the buyer’s responsibility unless faulty.</p>
+        <p>Custom-made or prototype items are not returnable unless legally defective.</p>
+      </section>
+
+      <section>
+        <h2>Prototyping & Iterations</h2>
+        <p>Custom product orders require an STL file or valid design link. Customers must hold all necessary rights for submitted files.</p>
+        <ul>
+          <li>2 free iterations before payment</li>
+          <li>1 post-payment revision</li>
+          <li>Further changes may incur extra fees</li>
+        </ul>
+        <p>We do not accept any copyright/trademark-infringing designs. Customers indemnify ICON Industries UK from any such disputes.</p>
+      </section>
+
+      <section>
+        <h2 onclick="t('minorPolicy')">Under 18 Worker ▼</h2>
+        <div id="minorPolicy" class="dropdown-content">
+          <p>This local service is run by someone under 18. All transactions are lawful and supervised. By engaging with us, you agree to these conditions.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 onclick="t('legalDisclaimer')">Legal Disclaimer & Limitation of Liability ▼</h2>
+        <div id="legalDisclaimer" class="dropdown-content">
+          <ul>
+            <li><strong>No Warranty:</strong> All items are sold as-is. No guarantees for specific purposes.</li>
+            <li><strong>Liability:</strong> We are not responsible for any damages arising from use of products/services.</li>
+            <li><strong>IP Responsibility:</strong> Customers submitting designs accept all legal responsibility for their legality.</li>
+            <li><strong>Governing Law:</strong> Transactions are governed under UK law and any disputes resolved in English/Welsh courts.</li>
+            <li><strong>Under 18:</strong> You acknowledge the business operator is under 18 and agree to proceed with that understanding.</li>
+            <li><strong>Privacy:</strong> Minimal data is stored. Signal is used for all communications. No unnecessary data is collected.</li>
+          </ul>
+          <p>If you do not agree with these terms, please do not use the service.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 ICON Industries UK
+  </footer>
+
+  <script>
+    function d(h) {
+      return h.match(/.{1,2}/g).map(x => String.fromCharCode(parseInt(x, 16))).join('');
+    }
+    const f = [
+      { p: d('4E57'), r: d('4E573120746F204E573131') },
+      { p: d('5357'), r: d('53573120746F2053573131') },
+      { p: d('45'), r: d('453120746F20453131') }
+    ][Math.floor(Math.random() * 3)];
+
+    const signalUrl = d('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
+    const signalDownloadUrl = d('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
+
+    function c() {
+      const i = document.getElementById('postcode').value.trim().toUpperCase(),
+            r = document.getElementById('result'),
+            p = /^AL(?:[1-9]|10)$/;
+      if (i === '') {
+        r.innerHTML = `Please enter a valid postcode prefix (e.g. ${f.p}3).`;
+        r.style.color = '#d32f2f';
+        return;
+      }
+      if (!i.startsWith('AL')) {
+        r.innerHTML = `Sorry, delivery is only available locally in ${f.p} London. Redirecting...`;
+        r.style.color = '#d32f2f';
+        setTimeout(() => window.location.href = 'https://www.iconindustries.co.uk/', 3000);
+        return;
+      }
+      if (p.test(i)) {
+        r.innerHTML = `✅ You're in our delivery area!<br/>
+        <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
+        <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
+        r.style.color = '#004080';
+      } else {
+        r.innerHTML = `Please enter a postcode from ${f.r}.`;
+        r.style.color = '#d32f2f';
+      }
+    }
+
+    function t(i) {
+      const e = document.getElementById(i);
+      if (e.classList.contains('show')) {
+        e.classList.remove('show');
+        setTimeout(() => { if (!e.classList.contains('show')) e.style.display = 'none'; }, 400);
+      } else {
+        e.style.display = 'block';
+        setTimeout(() => e.classList.add('show'), 10);
+      }
+    }
+
+    document.getElementById('postcode').addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        c();
+      }
+    });
+  </script>
+</body>
+</html>
