@@ -20,7 +20,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
 
-  <!-- Content Security Policy for inline scripts & trusted sources -->
+  <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline';
@@ -53,6 +53,12 @@
       color: #005c99;
       font-size: 1.3rem;
       font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    h2:hover {
+      color: #0077cc;
+      text-decoration: underline;
     }
     p, li {
       color: #333;
@@ -106,14 +112,6 @@
     .form-control {
       max-width: 300px;
     }
-    section h2[onclick] {
-      cursor: pointer;
-      user-select: none;
-    }
-    section h2[onclick]:hover {
-      color: #0077cc;
-      text-decoration: underline;
-    }
     /* Honeypot field hidden off screen */
     .honeypot {
       position: absolute;
@@ -132,7 +130,9 @@
 
   <main class="container py-5">
     <h1 class="text-center mb-4">Local UK Orders</h1>
-    <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
+    <p class="description text-center">
+      Enter the first part of your postcode to check if you’re eligible for local delivery.
+    </p>
 
     <form id="deliveryForm" class="d-flex flex-column align-items-center" onsubmit="return checkDelivery(event)">
       <input
@@ -156,9 +156,46 @@
     <div class="mt-5">
       <section>
         <h2>Privacy Policy</h2>
-        <p>All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.</p>
+        <p>
+          All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.
+        </p>
       </section>
-      <!-- Add more sections as needed -->
+
+      <section>
+        <h2 onclick="t('legalDisclaimer')">Legal Disclaimer & Limitation of Liability</h2>
+        <div id="legalDisclaimer" class="dropdown-content" aria-hidden="true">
+          <p>
+            ICON Industries UK provides delivery services in accordance with local regulations. Delivery availability is limited to specified postcode areas only.
+          </p>
+          <p>
+            Customers agree to the terms and conditions at the time of placing an order. ICON Industries UK is not liable for delays caused by unforeseen circumstances.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 onclick="t('deliveryTerms')">Delivery Terms & Conditions</h2>
+        <div id="deliveryTerms" class="dropdown-content" aria-hidden="true">
+          <p>
+            Delivery is only available within the specified postcode areas confirmed through this form.
+          </p>
+          <p>
+            Orders must be placed at least 24 hours in advance. Delivery times may vary due to traffic or weather conditions.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 onclick="t('contactInfo')">Contact Information</h2>
+        <div id="contactInfo" class="dropdown-content" aria-hidden="true">
+          <p>
+            For inquiries, please contact us via Signal at the link provided upon postcode confirmation.
+          </p>
+          <p>
+            Alternatively, email support@iconindustries.co.uk.
+          </p>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -167,10 +204,8 @@
   </footer>
 
   <script>
-    // Throttle control: block submissions faster than every 5 seconds
     let lastSubmissionTime = 0;
 
-    // Helper to split hex string into random 1- or 2-char chunks (obfuscation)
     function splitHex(str){
       const parts = [];
       for(let i=0; i<str.length;){
@@ -181,12 +216,10 @@
       return parts;
     }
 
-    // Decode array of hex chunks to string
     function decode(hexArr){
       return hexArr.map(h => String.fromCharCode(parseInt(h, 16))).join('');
     }
 
-    // Shuffle array in-place
     function shuffle(arr) {
       for(let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -195,18 +228,18 @@
       return arr;
     }
 
-    // Reconstruct string from hex string via split + decode
     function reconstruct(hexStr) {
       return decode(splitHex(hexStr));
     }
 
-    // Dropdown toggle
     function toggleDropdown(id){
       const el = document.getElementById(id);
       if(!el) return;
       if(el.classList.contains('show')){
         el.classList.remove('show');
-        setTimeout(() => { if(!el.classList.contains('show')) el.style.display='none'; }, 400);
+        setTimeout(() => {
+          if(!el.classList.contains('show')) el.style.display='none';
+        }, 400);
       } else {
         el.style.display = 'block';
         setTimeout(() => el.classList.add('show'), 10);
@@ -214,7 +247,6 @@
     }
     window.t = toggleDropdown;
 
-    // Main check function (triggered on form submit)
     function checkDelivery(event) {
       if(event) event.preventDefault();
 
@@ -232,14 +264,12 @@
       const honeypotEl = form.website;
       const resultEl = document.getElementById('result');
 
-      // Honeypot check
       if(honeypotEl.value) {
         resultEl.style.color = '#d32f2f';
         resultEl.textContent = "Bot detected. Submission blocked.";
         return false;
       }
 
-      // Fake postcode data, shuffled to confuse static analysis
       const fakePostcodes = shuffle([
         {p: reconstruct('4E57'), r: reconstruct('4E573120746F204E573131')},  // NW, NW1 to NW11
         {p: reconstruct('5357'), r: reconstruct('53573120746F2053573131')},  // SW, SW1 to SW11
@@ -263,7 +293,7 @@
       }
 
       if(postcodeRegex.test(val)) {
-        // Self-modifying code to confuse static analysis (optional, can remove)
+        // Self-modifying function to confuse static analysis - kept for security/obfuscation
         const newCode = checkDelivery.toString()
           .replace(/shuffle\(\[[\s\S]*?\]\)/, `shuffle([
             {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')},
