@@ -53,12 +53,6 @@
       color: #005c99;
       font-size: 1.3rem;
       font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-    }
-    h2:hover {
-      color: #0077cc;
-      text-decoration: underline;
     }
     p, li {
       color: #333;
@@ -72,6 +66,7 @@
     }
     #result {
       margin-top: 1rem;
+      min-height: 1.5em;
     }
     .dropdown-content {
       display: none;
@@ -112,6 +107,14 @@
     .form-control {
       max-width: 300px;
     }
+    section h2[onclick] {
+      cursor: pointer;
+      user-select: none;
+    }
+    section h2[onclick]:hover {
+      color: #0077cc;
+      text-decoration: underline;
+    }
     /* Honeypot field hidden off screen */
     .honeypot {
       position: absolute;
@@ -130,17 +133,15 @@
 
   <main class="container py-5">
     <h1 class="text-center mb-4">Local UK Orders</h1>
-    <p class="description text-center">
-      Enter the first part of your postcode to check if you’re eligible for local delivery.
-    </p>
+    <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
 
-    <form id="deliveryForm" class="d-flex flex-column align-items-center" onsubmit="return checkDelivery(event)">
+    <form id="deliveryForm" class="d-flex flex-column align-items-center" novalidate>
       <input
         type="text"
         id="postcode"
         name="postcode"
         class="form-control text-center"
-        placeholder="e.g. NW3..."
+        placeholder="e.g. AL1"
         maxlength="5"
         autocomplete="off"
         aria-label="Postcode prefix"
@@ -156,46 +157,9 @@
     <div class="mt-5">
       <section>
         <h2>Privacy Policy</h2>
-        <p>
-          All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.
-        </p>
+        <p>All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.</p>
       </section>
-
-      <section>
-        <h2 onclick="t('legalDisclaimer')">Legal Disclaimer & Limitation of Liability</h2>
-        <div id="legalDisclaimer" class="dropdown-content" aria-hidden="true">
-          <p>
-            ICON Industries UK provides delivery services in accordance with local regulations. Delivery availability is limited to specified postcode areas only.
-          </p>
-          <p>
-            Customers agree to the terms and conditions at the time of placing an order. ICON Industries UK is not liable for delays caused by unforeseen circumstances.
-          </p>
-        </div>
-      </section>
-
-      <section>
-        <h2 onclick="t('deliveryTerms')">Delivery Terms & Conditions</h2>
-        <div id="deliveryTerms" class="dropdown-content" aria-hidden="true">
-          <p>
-            Delivery is only available within the specified postcode areas confirmed through this form.
-          </p>
-          <p>
-            Orders must be placed at least 24 hours in advance. Delivery times may vary due to traffic or weather conditions.
-          </p>
-        </div>
-      </section>
-
-      <section>
-        <h2 onclick="t('contactInfo')">Contact Information</h2>
-        <div id="contactInfo" class="dropdown-content" aria-hidden="true">
-          <p>
-            For inquiries, please contact us via Signal at the link provided upon postcode confirmation.
-          </p>
-          <p>
-            Alternatively, email support@iconindustries.co.uk.
-          </p>
-        </div>
-      </section>
+      <!-- Add more sections as needed -->
     </div>
   </main>
 
@@ -204,122 +168,99 @@
   </footer>
 
   <script>
-    let lastSubmissionTime = 0;
-
-    function splitHex(str){
-      const parts = [];
-      for(let i=0; i<str.length;){
-        const step = Math.floor(Math.random()*2)+1;
-        parts.push(str.substr(i, step));
-        i += step;
+    // Decode hex-encoded string to normal string
+    function decodeHex(hex) {
+      let str = '';
+      for (let i = 0; i < hex.length; i += 2) {
+        const part = hex.substr(i, 2);
+        str += String.fromCharCode(parseInt(part, 16));
       }
-      return parts;
+      return str;
     }
 
-    function decode(hexArr){
-      return hexArr.map(h => String.fromCharCode(parseInt(h, 16))).join('');
-    }
-
+    // Shuffle array helper (Fisher-Yates)
     function shuffle(arr) {
-      for(let i = arr.length - 1; i > 0; i--) {
+      for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
       return arr;
     }
 
-    function reconstruct(hexStr) {
-      return decode(splitHex(hexStr));
-    }
+    // Predefined fake postcodes for messages
+    const fakePostcodes = shuffle([
+      { p: 'NW', r: 'NW1 to NW11' },
+      { p: 'SW', r: 'SW1 to SW11' },
+      { p: 'E1', r: 'E1 to 511' }
+    ]);
 
-    function toggleDropdown(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      if(el.classList.contains('show')){
-        el.classList.remove('show');
-        setTimeout(() => {
-          if(!el.classList.contains('show')) el.style.display='none';
-        }, 400);
-      } else {
-        el.style.display = 'block';
-        setTimeout(() => el.classList.add('show'), 10);
-      }
-    }
-    window.t = toggleDropdown;
+    // Signal URLs, hex encoded internally
+    const signalUrlHex = '68747470733a2f2f7369676e616c2e6d652f2365752f6d4e597678305f33744355454656626a5a43454a332d68677a695f6e544466704576557353775b4b525974676a79734d75394c4e504934666d5f4a65474c454437';
+    const signalDlHex = '68747470733a2f2f7369676e616c2e6f72672f646f776e6c6f61642f';
+    const signalUrl = decodeHex(signalUrlHex);
+    const signalDownloadUrl = decodeHex(signalDlHex);
+
+    // Throttle form submissions (5 seconds)
+    let lastSubmission = 0;
 
     function checkDelivery(event) {
-      if(event) event.preventDefault();
+      if (event) event.preventDefault();
 
       const now = Date.now();
-      if(now - lastSubmissionTime < 5000) {
-        const resultEl = document.getElementById('result');
-        resultEl.style.color = '#d32f2f';
-        resultEl.textContent = "Please wait a few seconds before trying again.";
+      if (now - lastSubmission < 5000) {
+        showMessage("Please wait a few seconds before trying again.", true);
         return false;
       }
-      lastSubmissionTime = now;
+      lastSubmission = now;
 
-      const form = document.getElementById('deliveryForm');
-      const inputEl = form.postcode;
-      const honeypotEl = form.website;
+      const inputEl = document.getElementById('postcode');
+      const honeypotEl = document.getElementById('website');
+
+      // Honeypot anti-bot check
+      if (honeypotEl.value) {
+        showMessage("Bot detected. Submission blocked.", true);
+        return false;
+      }
+
+      if (!inputEl) return false;
+
+      const val = (inputEl.value || '').trim().toUpperCase();
       const resultEl = document.getElementById('result');
 
-      if(honeypotEl.value) {
-        resultEl.style.color = '#d32f2f';
-        resultEl.textContent = "Bot detected. Submission blocked.";
+      // Basic validation: only alphanumeric 2-5 chars
+      if (!/^[A-Z0-9]{2,5}$/.test(val)) {
+        showMessage(`Invalid postcode prefix. Please enter something like "${fakePostcodes[0].p}3".`, true);
         return false;
       }
 
-      const fakePostcodes = shuffle([
-        {p: reconstruct('4E57'), r: reconstruct('4E573120746F204E573131')},  // NW, NW1 to NW11
-        {p: reconstruct('5357'), r: reconstruct('53573120746F2053573131')},  // SW, SW1 to SW11
-        {p: reconstruct('4531'), r: reconstruct('453120746F20353131')}     // E1, E1 to 511
-      ]);
-
-      let val = (inputEl.value || '').trim().toUpperCase();
-      const postcodeRegex = /^AL(?:[1-9]|10)$/;
-
-      if(val === '') {
-        resultEl.style.color = '#d32f2f';
-        resultEl.textContent = `Please enter a valid postcode prefix (e.g. ${fakePostcodes[0].p}3).`;
+      // Your rule: postcode must start with AL and number 1-10
+      if (!/^AL([1-9]|10)$/.test(val)) {
+        showMessage(`Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`, true);
+        setTimeout(() => {
+          window.location.href = 'https://www.iconindustries.co.uk/';
+        }, 3000);
         return false;
       }
 
-      if(!val.startsWith('AL')) {
-        resultEl.style.color = '#d32f2f';
-        resultEl.innerHTML = `Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`;
-        setTimeout(() => window.location.href = 'https://www.iconindustries.co.uk/', 3000);
-        return false;
-      }
+      // Valid postcode: show success and Signal contact links
+      resultEl.style.color = '#004080';
+      resultEl.innerHTML = `✅ You're in our delivery area!<br/>
+        <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
+        <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
 
-      if(postcodeRegex.test(val)) {
-        // Self-modifying function to confuse static analysis - kept for security/obfuscation
-        const newCode = checkDelivery.toString()
-          .replace(/shuffle\(\[[\s\S]*?\]\)/, `shuffle([
-            {p: decodeHex('4E57'), r: decodeHex('4E573120746F204E573131')},
-            {p: decodeHex('5357'), r: decodeHex('53573120746F2053573131')},
-            {p: decodeHex('4531'), r: decodeHex('453120746F20353131')}
-          ])`);
-        try {
-          eval('checkDelivery = ' + newCode);
-        } catch(e) {}
-
-        const signalUrl = reconstruct('68747470733A2F2F7369676E616C2E6D652F2365752F6D4E597678305F33744355454656626A5A43454A332D68677A695F6E544466704576557353775B4B525974676A79734D75394C4E504934666D5F4A65474C454437');
-        const signalDownloadUrl = reconstruct('68747470733A2F2F7369676E616C2E6F72672F646F776E6C6F61642F');
-
-        resultEl.style.color = '#004080';
-        resultEl.innerHTML = `✅ You're in our delivery area!<br/>
-          <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
-          <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
-
-        return true;
-      } else {
-        resultEl.style.color = '#d32f2f';
-        resultEl.textContent = `Please enter a postcode from ${fakePostcodes[0].r}.`;
-        return false;
-      }
+      return true;
     }
-    window.c = checkDelivery;
+
+    function showMessage(msg, isError) {
+      const resultEl = document.getElementById('result');
+      resultEl.style.color = isError ? '#d32f2f' : '#004080';
+      resultEl.textContent = msg;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('deliveryForm');
+      if (form) form.addEventListener('submit', checkDelivery);
+    });
   </script>
 </body>
 </html>
