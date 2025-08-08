@@ -133,7 +133,7 @@
     <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
 
     <div class="d-flex flex-column align-items-center">
-      <input type="text" id="postcode" class="form-control text-center" placeholder="e.g. AL3..." maxlength="5" />
+      <input type="text" id="postcode" class="form-control text-center" placeholder="e.g. NW3..." maxlength="5" />
       <button class="btn btn-primary mt-2" onclick="checkPostcode()">Check Delivery Area</button>
       <div id="result" class="text-center mt-3"></div>
     </div>
@@ -196,19 +196,29 @@
   </footer>
 
   <script>
+    // Randomly choose a fake postcode area range for display confusion
+    const fakePostcodeRanges = [
+      {prefix: 'NW', range: 'NW1 to NW11'},
+      {prefix: 'SW', range: 'SW1 to SW11'},
+      {prefix: 'E', range: 'E1 to E11'}
+    ];
+    const fakeRange = fakePostcodeRanges[Math.floor(Math.random() * fakePostcodeRanges.length)];
+
     function checkPostcode() {
       const input = document.getElementById("postcode").value.trim().toUpperCase();
       const result = document.getElementById("result");
+      // Real pattern: AL1 to AL10 - your real delivery area
       const pattern = /^AL(?:[1-9]|10)$/;
 
       if (input === "") {
-        result.innerHTML = "Please enter a valid postcode prefix (e.g. AL3).";
+        result.innerHTML = `Please enter a valid postcode prefix (e.g. ${fakeRange.prefix}3).`;
         result.style.color = "#d32f2f";
         return;
       }
 
+      // Validation checks for AL prefix to keep actual delivery logic safe
       if (!input.startsWith("AL")) {
-        result.innerHTML = "Sorry, delivery is only available locally. Redirecting...";
+        result.innerHTML = `Sorry, delivery is only available locally in ${fakeRange.prefix} London. Redirecting...`;
         result.style.color = "#d32f2f";
         setTimeout(() => {
           window.location.href = "https://www.iconindustries.co.uk/";
@@ -222,7 +232,7 @@
           <small>Don't have Signal? <a href="https://signal.org/download/" target="_blank">Download here</a></small>`;
         result.style.color = "#004080";
       } else {
-        result.innerHTML = "Please enter a postcode from AL1 to AL10.";
+        result.innerHTML = `Please enter a postcode from ${fakeRange.range}.`;
         result.style.color = "#d32f2f";
       }
     }
