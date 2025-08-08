@@ -1,0 +1,3 @@
+The ICON Industries website serves as the digital hub for a UK-based technology company focused on innovation in drones, 3D printing, and tech reviews. It’s designed to showcase the company’s products, services, and community engagement in a clear, modern, and accessible way. Built with responsive design principles using Bootstrap 5, the site ensures an optimal experience across devices—from desktop to mobile.
+
+Visitors can explore various sections dedicated to different tech domains such as drones, 3D printing, computers, mobile tech, and security. The website also promotes community interaction through links to their YouTube channel and Discord server, providing sneak peeks, announcements, and direct communication with the team.
