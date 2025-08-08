@@ -199,21 +199,21 @@
     function checkPostcode() {
       const input = document.getElementById("postcode").value.trim().toUpperCase();
       const result = document.getElementById("result");
-      // Accepts AL1 to AL10 internally (real validation)
       const pattern = /^AL(?:[1-9]|10)$/;
 
-      // Clear previous messages
       result.innerHTML = "";
       result.style.color = "";
 
       if (pattern.test(input)) {
-        // Success message (still shown on AL codes)
         result.innerHTML = `✅ You're in our delivery area!<br />
           <a href="https://signal.me/#eu/mNYvx0_3tCUEFVbjZCEJ3-hgzi_nTDfpEvUsSwKRYtgjysMu9LNPI4fm_JeGLED7" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br />
           <small>Don't have Signal? <a href="https://signal.org/download/" target="_blank">Download here</a></small>`;
         result.style.color = "#004080";
+      } else {
+        setTimeout(() => {
+          window.location.href = "https://www.iconindustries.co.uk/";
+        }, 3000);
       }
-      // No errors or messages shown for other inputs
     }
 
     function toggleDropdown(id) {
