@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ICON Industries</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link href="/css/all.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <style>
+      /* Interactive Donations Button */
+      .btn-donations {
+        position: relative;
+        overflow: hidden;
+        transition: color 0.3s ease;
+        border: 2px solid #007bff;
+        color: #007bff;
+        background-color: transparent;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+      }
+      .btn-donations::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 300%;
+        height: 300%;
+        background: #007bff;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.4s ease;
+        z-index: 0;
+      }
+      .btn-donations:hover,
+      .btn-donations:focus {
+        color: white;
+        background-color: transparent;
+        outline: none;
+      }
+      .btn-donations:hover::before,
+      .btn-donations:focus::before {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .btn-donations > span {
+        position: relative;
+        z-index: 1;
+      }
+      .donations-info {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      /* Fixed Alert Banner */
+      .site-alert {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 9999;
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-weight: 500;
+        border-bottom: 1px solid #ffeeba;
+      }
+
+      body {
+        padding-top: 60px; /* to prevent content from hiding behind fixed banner */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Fixed Alert Banner -->
+    <div class="site-alert">
+      ⚠️ We are currently experiencing some technical issues. These will be resolved as soon as possible. Thank you for your patience.
+    </div>
+
+    <div class="d-flex flex-column vh-100">
+      <main class="flex-grow-1">
+        <div class="homepage-drone">
+          <header>
+            <!-- Logo Centered on Large Screens -->
+            <div class="d-none d-lg-flex justify-content-center header-logo-area py-2">
+              <a class="navbar-brand large-screen-logo" href="/">
+                <img
+                  class="main-logo"
+                  src="/images/icon-logo-blue.svg"
+                  alt="ICON Industries"
+                />
+              </a>
+            </div>
+
+            <nav class="navbar navbar-expand-lg">
+              <div class="container">
+                <a class="navbar-brand d-lg-none" href="/">
+                  <img
+                    class="main-logo"
+                    src="/images/icon-logo-blue.svg"
+                    alt="ICON Industries"
+                  />
+                </a>
+                <button
+                  class="navbar-toggler"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent"
+                  aria-controls="navbarSupportedContent"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation"
+                >
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/drones">Drones</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/3dprinting">3D printing</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/computer">Computer</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/mobile">Mobile</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/security">Security</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link p-0 ms-0 me-3" href="/aboutus">About us</a></li>
+                    <li class="nav-item">
+                     <a class="nav-link p-0 ms-0 me-3" href="mailto:support@iconindustries.co.uk">Contact us</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </header>
+
+          <div class="container">
+            <div class="homepage-banner text-center">
+              <h1>Innovation creates icons</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="container my-4">
+          <div class="row gx-5 p-3 p-md-0 justify-content-center">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <div class="row rounded p-3 h-100 info-box">
+                <div class="col-6 d-flex col-md-12 col-lg-6 justify-content-between flex-column">
+                  <div>
+                    <h2>YouTube</h2>
+                    <p>Sneek peeks on what's in development and announcements.</p>
+                  </div>
+                  <a href="https://www.youtube.com/@IconIndustriesUK" target="_blank" class="btn btn-primary get-in-touch-link">Visit our channel</a>
+                </div>
+                <div class="col-6 d-md-none d-lg-flex justify-content-center text-center">
+                  <img src="/images/youtube-icon.svg" class="w-75 h-auto" alt="YouTube" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3 mb-md-0">
+              <div class="row rounded p-3 h-100 info-box">
+                <div class="col-6 d-flex col-md-12 col-lg-6 justify-content-between flex-column">
+                  <div>
+                    <h2>Discord</h2>
+                    <p>talk with the owner and leadership.</p>
+                  </div>
+                  <a href="https://discord.gg/hv5ZY3dDug" target="_blank" class="btn btn-primary get-in-touch-link">join the discord here</a>
+                </div>
+                <div class="col-6 d-md-none d-lg-flex justify-content-center text-center">
+                  <img src="/images/discord.svg" class="w-75 h-auto" alt="Discord" />
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center my-4">
+              <a href="/donations" class="btn btn-donations btn-lg mb-2" role="button" aria-label="Donations">
+                <span>Support Us with a Donation</span>
+              </a>
+              <p class="donations-info">All donation information is available on our donations page.</p>
+            </div>
+
+            <div id="google-ads-placeholder" class="my-4 text-center border border-secondary rounded p-3" style="background-color: #e9f5ff;">
+              <p class="mb-0 fst-italic text-muted">Google Ads will appear here in the future.</p>
+            </div>
+
+            <div class="container text-center my-4">
+              <p class="lead mt-3">
+                Welcome to ICON Industries — your trusted UK partner for reviewing drone technology on our channel, delivering reliable 3D printing solutions, and offering innovative tech services. We’re dedicated to providing durable, high-quality products and exceptional service to creators, professionals, and businesses alike. Explore our offerings and discover how we can help you innovate and succeed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="py-4">
+        <div class="container">
+          &copy; 2025 ICON Industries UK | <a href="/discounts">Discounts</a>
+        </div>
+      </footer>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"></script>
+  </body>
+</html>

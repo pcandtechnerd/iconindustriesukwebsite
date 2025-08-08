@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ICON Industries UK - Mobile Device Policy</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4faff;
+        color: #111;
+        margin: 0;
+        padding: 0;
+      }
+
+      .top-logo {
+        text-align: center;
+        background-color: #ffffff;
+        padding: 20px 0;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .top-logo img {
+        height: 60px;
+      }
+
+      header {
+        background-color: #0077cc;
+        color: white;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 15px 0;
+      }
+
+      header a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 32px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-top: 30px;
+        color: #003366;
+      }
+
+      ul {
+        padding-left: 20px;
+        margin-top: 10px;
+      }
+
+      li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      p {
+        font-size: 17px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
+
+      footer {
+        margin-top: 50px;
+        text-align: center;
+        background-color: #0077cc;
+        color: white;
+        padding: 20px;
+      }
+
+      .donate-button {
+        margin-top: 15px;
+        background-color: #ffffff;
+        color: #0077cc;
+        border: 2px solid white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+      }
+
+      .donate-button:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="top-logo">
+      <img class="main-logo" src="/images/icon-logo-blue.svg" alt="ICON Industries">
+    </div>
+
+    <header>
+      <a href="/">Home</a>
+      <a href="/computer">Computer</a>
+      <a href="/store">Store</a>
+    </header>
+
+    <div class="container">
+      <h1>Mobile Security Strategy & Review Pipeline</h1>
+
+      <p>
+        At ICON Industries UK, safeguarding operational and customer data is a foundational principle. Our mobile ecosystem is built on a hybrid, cross-vendor strategy involving Apple iPhones (iOS), Samsung Galaxy devices (One UI/Knox), and Google Pixel phones (AOSP-based Android with Titan M2). This allows us to test and deploy hardened security configurations across distinct architectures.
+      </p>
+
+      <h2>Hardware Stack Overview</h2>
+      <ul>
+        <li><strong>Apple iPhone (iOS):</strong> Secure Enclave, iOS lockdown mode, iCloud E2EE, native Passkeys, and system integrity protection (SIP).</li>
+        <li><strong>Samsung Galaxy (One UI):</strong> Knox Vault, SE for Android, DeX for sandboxed work profiles, and monthly Android security updates.</li>
+        <li><strong>Google Pixel (Android):</strong> Titan M2 security chip, Verified Boot, Private Compute Core, and GrapheneOS compatibility for advanced hardening.</li>
+      </ul>
+
+      <h2>Phone Review Workflow (YouTube)</h2>
+
+      <p>
+        Beyond secure usage, we also independently review smartphones across two YouTube channels. Our main content is published via <a href="https://www.youtube.com/@IconIndustriesUK" target="_blank">ICON Industries UK</a>, while more in-depth, technical breakdowns and behind-the-scenes workflows are shared on the owner's personal channel: <a href="https://www.youtube.com/@pcandtechnerd" target="_blank">PC & Tech Nerd</a>.
+      </p>
+
+      <p>Every review is based on hands-on testing with a structured methodology that includes:</p>
+      <ul>
+        <li>Privacy audit: system telemetry, app permissions, background network activity</li>
+        <li>Security features: biometric bypass resilience, lockscreen exploit testing, firmware update frequency</li>
+        <li>Performance: thermal throttling, sustained multitasking benchmarks</li>
+        <li>Repairability & longevity: teardown access, spare part availability, software support horizon</li>
+        <li>Real-world usage: battery drain under encrypted VoIP, camera use under restricted permissions, etc.</li>
+      </ul>
+
+      <p>
+        All review content is first uploaded to our founder's personal YouTube channel and published on our official blog, which features additional commentary and monetization via Google Ads. Approximately 3 weeks later, an edited version is published on the ICON Industries UK channel for wider business and public distribution.
+      </p>
+
+      <p>
+        Each device is scored using our internal framework to help consumers, businesses, and ethical hackers make informed purchase and deployment decisions.
+      </p>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 ICON Industries UK. All rights reserved.</p>
+      <a href="/donations" class="donate-button">Support Us</a>
+    </footer>
+
+  </body>
+</html>

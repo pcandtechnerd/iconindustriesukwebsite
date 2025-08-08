@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D Printers | ICON Industries</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #d6ecff;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #ffffff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .main-logo {
+      width: 50px;
+      height: auto;
+      margin-right: 12px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin: 0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #007acc;
+      font-weight: bold;
+    }
+    .ads-placeholder {
+      background-color: #ffffff;
+      color: #555;
+      padding: 10px;
+      text-align: center;
+      border: 2px dashed #ccc;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+    .printer-section {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .printer {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .printer h2 {
+      margin-top: 0;
+      color: #005ca9;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .confidential {
+      cursor: pointer;
+      color: #ff4c4c;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #ffffff;
+      margin-top: 40px;
+    }
+  </style>
+  <script>
+    function revealConfidential() {
+      alert("Details are currently confidential. Check back later.");
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <a href="/"><img class="main-logo" src="/images/icon-logo-blue.svg" alt="ICON Industries"></a>
+      <h1>ICON Industries – 3D Printers</h1>
+    </div>
+    <nav>
+      <a href="/">← Back to Main Site</a>
+    </nav>
+  </header>
+
+  <div class="ads-placeholder">[Google Ads will appear here in the future to support the site]</div>
+
+  <section class="printer-section">
+    <div class="printer">
+      <h2>Bambu Lab P1S</h2>
+      <ul>
+        <li>CoreXY high-speed architecture</li>
+        <li>Fully enclosed chamber</li>
+        <li>Automatic bed leveling</li>
+        <li>Remote printing via Bambu Studio & Handy</li>
+        <li>Compatible with AMS for multi-material printing</li>
+      </ul>
+    </div>
+
+    <div class="printer">
+      <h2>Bambu Lab A1 Mini</h2>
+      <ul>
+        <li>Bed-slinger with CoreXY-like performance</li>
+        <li>Automated calibration (flow, bed level, nozzle height)</li>
+        <li>Quiet operation with compact form factor</li>
+        <li>Perfect for small prototypes and detail prints</li>
+      </ul>
+    </div>
+
+    <div class="printer">
+      <h2 class="confidential" onclick="revealConfidential()">Upcoming Models (Click to Reveal)</h2>
+    </div>
+  </section>
+
+  <div class="ads-placeholder">[Future Google Ads placement]</div>
+
+  <footer>
+    &copy; 2025 ICON Industries UK. All rights reserved.
+  </footer>
+</body>
+</html>
