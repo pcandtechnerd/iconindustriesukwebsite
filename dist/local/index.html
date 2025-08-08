@@ -20,21 +20,12 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="googlebot" content="noindex, nofollow" />
 
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;
-    font-src https://fonts.gstatic.com;
-    img-src 'self' data:;
-    connect-src 'self';
-  " />
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #e6f4ff;
     }
+
     header {
       background-color: #ffffff;
       border-bottom: 1px solid #b3d9ff;
@@ -45,29 +36,35 @@
       cursor: pointer;
       color: #0077cc;
     }
+
     h1 {
       font-weight: 600;
       color: #004080;
     }
+
     h2 {
       color: #005c99;
       font-size: 1.3rem;
       font-weight: 600;
     }
+
     p, li {
       color: #333;
     }
+
     .description {
       font-size: 1rem;
       color: #444;
     }
+
     input, button {
       margin-top: 1rem;
     }
+
     #result {
       margin-top: 1rem;
-      min-height: 1.5em;
     }
+
     .dropdown-content {
       display: none;
       margin-top: 1rem;
@@ -77,18 +74,22 @@
       border-radius: 8px;
       border: 1px solid #cce7ff;
     }
+
     .dropdown-content.show {
       display: block;
     }
+
     section {
       margin-bottom: 2rem;
     }
+
     footer {
       background-color: #004080;
       color: white;
       text-align: center;
       padding: 1rem 0;
     }
+
     .btn-primary {
       background-color: #4db8ff;
       border: none;
@@ -98,31 +99,27 @@
       box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
       transition: transform 0.1s ease-in-out, background-color 0.2s;
     }
+
     .btn-primary:hover {
       background-color: #3399ff;
     }
+
     .btn-primary:active {
       transform: scale(0.95);
     }
+
     .form-control {
       max-width: 300px;
     }
+
     section h2[onclick] {
       cursor: pointer;
       user-select: none;
     }
+
     section h2[onclick]:hover {
       color: #0077cc;
       text-decoration: underline;
-    }
-    /* Honeypot field hidden off screen */
-    .honeypot {
-      position: absolute;
-      left: -9999px;
-      visibility: hidden;
-      height: 0;
-      width: 0;
-      overflow: hidden;
     }
   </style>
 </head>
@@ -135,31 +132,62 @@
     <h1 class="text-center mb-4">Local UK Orders</h1>
     <p class="description text-center">Enter the first part of your postcode to check if you’re eligible for local delivery.</p>
 
-    <form id="deliveryForm" class="d-flex flex-column align-items-center" novalidate>
-      <input
-        type="text"
-        id="postcode"
-        name="postcode"
-        class="form-control text-center"
-        placeholder="e.g. AL1"
-        maxlength="5"
-        autocomplete="off"
-        aria-label="Postcode prefix"
-      />
-
-      <!-- Honeypot field: bots might fill this but humans won't -->
-      <input type="text" name="website" id="website" class="honeypot" tabindex="-1" autocomplete="off" />
-
-      <button type="submit" class="btn btn-primary mt-2">Check Delivery Area</button>
-      <div id="result" class="text-center mt-3" aria-live="polite" aria-atomic="true"></div>
-    </form>
+    <div class="d-flex flex-column align-items-center">
+      <input type="text" id="postcode" class="form-control text-center" placeholder="e.g. NW3..." maxlength="5" />
+      <button class="btn btn-primary mt-2" onclick="checkPostcode()">Check Delivery Area</button>
+      <div id="result" class="text-center mt-3"></div>
+    </div>
 
     <div class="mt-5">
       <section>
         <h2>Privacy Policy</h2>
         <p>All communication is conducted securely via Signal with a 4-week chat retention period for customer privacy and transparency.</p>
       </section>
-      <!-- Add more sections as needed -->
+
+      <section>
+        <h2>Payment & Charges</h2>
+        <p>Payment is required in cash upon delivery unless otherwise agreed in writing.</p>
+        <p>Excessive delays, no-shows, or misuse of time may incur a Time Waster Fee of up to £15, payable before any future service.</p>
+      </section>
+
+      <section>
+        <h2>Return Policy</h2>
+        <p>Returns must be requested within 14 calendar days. Items must be unused and in original condition. Return shipping is the buyer’s responsibility unless faulty.</p>
+        <p>Custom-made or prototype items are not returnable unless legally defective.</p>
+      </section>
+
+      <section>
+        <h2>Prototyping & Iterations</h2>
+        <p>Custom product orders require an STL file or valid design link. Customers must hold all necessary rights for submitted files.</p>
+        <ul>
+          <li>2 free iterations before payment</li>
+          <li>1 post-payment revision</li>
+          <li>Further changes may incur extra fees</li>
+        </ul>
+        <p>We do not accept any copyright/trademark-infringing designs. Customers indemnify ICON Industries UK from any such disputes.</p>
+      </section>
+
+      <section>
+        <h2 onclick="toggleDropdown('minorPolicy')">Under 18 Worker ▼</h2>
+        <div id="minorPolicy" class="dropdown-content">
+          <p>This local service is run by someone under 18. All transactions are lawful and supervised. By engaging with us, you agree to these conditions.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 onclick="toggleDropdown('legalDisclaimer')">Legal Disclaimer & Limitation of Liability ▼</h2>
+        <div id="legalDisclaimer" class="dropdown-content">
+          <ul>
+            <li><strong>No Warranty:</strong> All items are sold as-is. No guarantees for specific purposes.</li>
+            <li><strong>Liability:</strong> We are not responsible for any damages arising from use of products/services.</li>
+            <li><strong>IP Responsibility:</strong> Customers submitting designs accept all legal responsibility for their legality.</li>
+            <li><strong>Governing Law:</strong> Transactions are governed under UK law and any disputes resolved in English/Welsh courts.</li>
+            <li><strong>Under 18:</strong> You acknowledge the business operator is under 18 and agree to proceed with that understanding.</li>
+            <li><strong>Privacy:</strong> Minimal data is stored. Signal is used for all communications. No unnecessary data is collected.</li>
+          </ul>
+          <p>If you do not agree with these terms, please do not use the service.</p>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -168,98 +196,44 @@
   </footer>
 
   <script>
-    // Decode hex-encoded string to normal string
-    function decodeHex(hex) {
-      let str = '';
-      for (let i = 0; i < hex.length; i += 2) {
-        const part = hex.substr(i, 2);
-        str += String.fromCharCode(parseInt(part, 16));
+    function checkPostcode() {
+      const input = document.getElementById("postcode").value.trim().toUpperCase();
+      const result = document.getElementById("result");
+      // Accepts AL1 to AL10 internally (real validation)
+      const pattern = /^AL(?:[1-9]|10)$/;
+
+      // Clear previous messages
+      result.innerHTML = "";
+      result.style.color = "";
+
+      if (pattern.test(input)) {
+        // Success message (still shown on AL codes)
+        result.innerHTML = `✅ You're in our delivery area!<br />
+          <a href="https://signal.me/#eu/mNYvx0_3tCUEFVbjZCEJ3-hgzi_nTDfpEvUsSwKRYtgjysMu9LNPI4fm_JeGLED7" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br />
+          <small>Don't have Signal? <a href="https://signal.org/download/" target="_blank">Download here</a></small>`;
+        result.style.color = "#004080";
       }
-      return str;
+      // No errors or messages shown for other inputs
     }
 
-    // Shuffle array helper (Fisher-Yates)
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    // Predefined fake postcodes for messages
-    const fakePostcodes = shuffle([
-      { p: 'NW', r: 'NW1 to NW11' },
-      { p: 'SW', r: 'SW1 to SW11' },
-      { p: 'E1', r: 'E1 to 511' }
-    ]);
-
-    // Signal URLs, hex encoded internally
-    const signalUrlHex = '68747470733a2f2f7369676e616c2e6d652f2365752f6d4e597678305f33744355454656626a5a43454a332d68677a695f6e544466704576557353775b4b525974676a79734d75394c4e504934666d5f4a65474c454437';
-    const signalDlHex = '68747470733a2f2f7369676e616c2e6f72672f646f776e6c6f61642f';
-    const signalUrl = decodeHex(signalUrlHex);
-    const signalDownloadUrl = decodeHex(signalDlHex);
-
-    // Throttle form submissions (5 seconds)
-    let lastSubmission = 0;
-
-    function checkDelivery(event) {
-      if (event) event.preventDefault();
-
-      const now = Date.now();
-      if (now - lastSubmission < 5000) {
-        showMessage("Please wait a few seconds before trying again.", true);
-        return false;
-      }
-      lastSubmission = now;
-
-      const inputEl = document.getElementById('postcode');
-      const honeypotEl = document.getElementById('website');
-
-      // Honeypot anti-bot check
-      if (honeypotEl.value) {
-        showMessage("Bot detected. Submission blocked.", true);
-        return false;
-      }
-
-      if (!inputEl) return false;
-
-      const val = (inputEl.value || '').trim().toUpperCase();
-      const resultEl = document.getElementById('result');
-
-      // Basic validation: only alphanumeric 2-5 chars
-      if (!/^[A-Z0-9]{2,5}$/.test(val)) {
-        showMessage(`Invalid postcode prefix. Please enter something like "${fakePostcodes[0].p}3".`, true);
-        return false;
-      }
-
-      // Your rule: postcode must start with AL and number 1-10
-      if (!/^AL([1-9]|10)$/.test(val)) {
-        showMessage(`Sorry, delivery is only available locally in ${fakePostcodes[0].p} London. Redirecting...`, true);
+    function toggleDropdown(id) {
+      const elem = document.getElementById(id);
+      if (elem.classList.contains('show')) {
+        elem.classList.remove('show');
         setTimeout(() => {
-          window.location.href = 'https://www.iconindustries.co.uk/';
-        }, 3000);
-        return false;
+          if (!elem.classList.contains('show')) elem.style.display = 'none';
+        }, 400);
+      } else {
+        elem.style.display = 'block';
+        setTimeout(() => elem.classList.add('show'), 10);
       }
-
-      // Valid postcode: show success and Signal contact links
-      resultEl.style.color = '#004080';
-      resultEl.innerHTML = `✅ You're in our delivery area!<br/>
-        <a href="${signalUrl}" target="_blank" rel="noopener noreferrer">Contact us on Signal</a><br/>
-        <small>Don't have Signal? <a href="${signalDownloadUrl}" target="_blank">Download here</a></small>`;
-
-      return true;
     }
 
-    function showMessage(msg, isError) {
-      const resultEl = document.getElementById('result');
-      resultEl.style.color = isError ? '#d32f2f' : '#004080';
-      resultEl.textContent = msg;
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('deliveryForm');
-      if (form) form.addEventListener('submit', checkDelivery);
+    document.getElementById("postcode").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        checkPostcode();
+      }
     });
   </script>
 </body>
